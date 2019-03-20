@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">CMC Lage</string>
+    <string name="title_activity_nav_d">nav_d</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="tap_text">Select any language below :</string>
+    <string name="btn_en">English</string>
+    <string name="btn_ru">Russian</string>
+    <string name="btn_de">German</string>
+    <string name="btn_fr">French</string>
+    <string name="btn_hi">Hindi</string>
+    <string name="access_token" translatable="false">pk.eyJ1IjoidXRzYXZidWNreSIsImEiOiJjanQ0ZXg1MGExamhsM3lsa3Y5eG1oaHZ4In0.cUzgY7YrDdxM4smjtr_4UA</string>
+    <string name="google_maps_api_key">AIzaSyCb3UdAcXp2WOqukahzU8-EdYucrNJb-eI</string>
+</resources>

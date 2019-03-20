@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.utsavgupta.cmclage">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.CLEAR_APP_CACHE"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/cmc_image"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/cmc_image"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".dashboard"
+            android:theme="@style/AppFullScreenTheme"
+            ></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
+        <activity android:name=".MapsMarkerActivity" />
+        <activity android:name=".OfflineMap" />
+        <activity android:name=".mapbox" />
+        <activity
+            android:name=".search_symptom"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity
+            android:name=".mro"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity
+            android:name=".About"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity
+            android:name=".navigation"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".login" />
+        <activity
+            android:name=".Splash"
+            android:theme="@style/AppFullScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".users"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity
+            android:name=".nav_d"
+            android:label="CMC Lage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".suggestion"
+            android:theme="@style/AppFullScreenTheme" />
+    </application>
+
+</manifest>
