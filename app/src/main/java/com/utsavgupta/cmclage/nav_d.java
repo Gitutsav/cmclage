@@ -317,7 +317,7 @@ public class nav_d
         Splash.savePreferences("userlogin", "logged_in");
         this.progressDialog = new ProgressDialog(this);
         this.progressDialog.setCancelable(false);
-        this.progressDialog.setMessage("Fetching Data , please wait.");
+        this.progressDialog.setMessage("Fetching Data, please wait.");
         this.progressDialog.show();
         this.recyclerviewx = ((RecyclerView)findViewById(R.id.recyclerViewx));
         LinearLayoutManager localLinearLayoutManager1 = new LinearLayoutManager(getApplicationContext());
