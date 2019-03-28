@@ -203,7 +203,8 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
            date.setText(dates);
            location.setText(loc);
            appoint_id.setText(app_id);
-           if(stat.equals("0")){
+           if(stat.equals("0"))
+               {
                statts.setVisibility(View.GONE);
                done.setVisibility(View.VISIBLE);
                }

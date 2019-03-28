@@ -76,6 +76,48 @@ public class nav_d
     private ArrayList<String> statust = new ArrayList();
     private SwipeRefreshLayout swipeRefreshLayout;
     TextView username;
+    protected void onCreate(Bundle paramBundle)
+    {
+        super.onCreate(paramBundle);
+        setContentView(R.layout.activity_nav_d);
+        Toolbar localToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(localToolbar);
+        getSupportActionBar().setElevation(0.0F);
+        this.username = ((TextView)findViewById(R.id.username));
+        this.p_id = ((TextView)findViewById(R.id.level));
+        this.builder1 = new AlertDialog.Builder(this);
+        this.builder1.setCancelable(false);
+        this.swipeRefreshLayout = ((SwipeRefreshLayout)findViewById(R.id.simpleSwipeRefreshLayout));
+        this.appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
+        Splash.savePreferences("userlogin", "logged_in");
+        this.progressDialog = new ProgressDialog(this);
+        this.progressDialog.setCancelable(false);
+        this.progressDialog.setMessage("Fetching Data, please wait.");
+        this.progressDialog.show();
+        this.recyclerviewx = ((RecyclerView)findViewById(R.id.recyclerViewx));
+        LinearLayoutManager localLinearLayoutManager1 = new LinearLayoutManager(getApplicationContext());
+        this.recyclerviewx.setLayoutManager(localLinearLayoutManager1);
+        readDatax();
+        this.recyclerview = ((RecyclerView)findViewById(R.id.recyclerView));
+        LinearLayoutManager localLinearLayoutManager2 = new LinearLayoutManager(getApplicationContext());
+        this.recyclerview.setLayoutManager(localLinearLayoutManager2);
+        this.patient_id = getSharedPreferences("patient_detail", 0).getString("patient_id", null);
+        readData();
+        this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            public void onRefresh()
+            {
+                nav_d.this.readData();
+                nav_d.this.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        DrawerLayout localDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout, localToolbar, 2131755188, 2131755187);
+        localDrawerLayout.addDrawerListener(localActionBarDrawerToggle);
+        localActionBarDrawerToggle.syncState();
+        ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(this);
+    }
+
 
     public static boolean deleteDir(File paramFile)
     {
@@ -245,7 +287,8 @@ public class nav_d
         }
     }
 
-    private void showSnack(boolean isConnected) {
+    private void showSnack(boolean isConnected)
+    {
         String message;
         int color;
         if (isConnected) {
@@ -255,10 +298,8 @@ public class nav_d
             message = "Sorry! Not connected to internet";
             color = Color.RED;
         }
-
         Snackbar snackbar = Snackbar
                 .make(findViewById(R.id.fab), message, Snackbar.LENGTH_LONG);
-
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(color);
@@ -299,48 +340,6 @@ public class nav_d
                 nav_d.this.finish();
             }
         }).setNegativeButton("No", null).show();
-    }
-
-    protected void onCreate(Bundle paramBundle)
-    {
-        super.onCreate(paramBundle);
-        setContentView(R.layout.activity_nav_d);
-        Toolbar localToolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(localToolbar);
-        getSupportActionBar().setElevation(0.0F);
-        this.username = ((TextView)findViewById(R.id.username));
-        this.p_id = ((TextView)findViewById(R.id.level));
-        this.builder1 = new AlertDialog.Builder(this);
-        this.builder1.setCancelable(false);
-        this.swipeRefreshLayout = ((SwipeRefreshLayout)findViewById(R.id.simpleSwipeRefreshLayout));
-        this.appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
-        Splash.savePreferences("userlogin", "logged_in");
-        this.progressDialog = new ProgressDialog(this);
-        this.progressDialog.setCancelable(false);
-        this.progressDialog.setMessage("Fetching Data, please wait.");
-        this.progressDialog.show();
-        this.recyclerviewx = ((RecyclerView)findViewById(R.id.recyclerViewx));
-        LinearLayoutManager localLinearLayoutManager1 = new LinearLayoutManager(getApplicationContext());
-        this.recyclerviewx.setLayoutManager(localLinearLayoutManager1);
-        readDatax();
-        this.recyclerview = ((RecyclerView)findViewById(R.id.recyclerView));
-        LinearLayoutManager localLinearLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-        this.recyclerview.setLayoutManager(localLinearLayoutManager2);
-        this.patient_id = getSharedPreferences("patient_detail", 0).getString("patient_id", null);
-        readData();
-        this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            public void onRefresh()
-            {
-                nav_d.this.readData();
-                nav_d.this.swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-        DrawerLayout localDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout, localToolbar, 2131755188, 2131755187);
-        localDrawerLayout.addDrawerListener(localActionBarDrawerToggle);
-        localActionBarDrawerToggle.syncState();
-        ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(this);
     }
 
 
@@ -456,7 +455,7 @@ public class nav_d
                     DataSnapshot localDataSnapshot = (DataSnapshot)localIterator.next();
                     for (int i = 0; i < nav_d.this.appointment_id.size(); i++) {
                         if (localDataSnapshot.getKey().equals(nav_d.this.appointment_id.get(i))) {
-                            nav_d.this.status.add(localDataSnapshot.getValue().toString());
+                            status.add(localDataSnapshot.getValue().toString());
                         }
                     }
                 }
