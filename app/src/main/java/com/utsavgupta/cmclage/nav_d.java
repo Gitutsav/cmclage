@@ -49,7 +49,9 @@ public class nav_d
         implements NavigationView.OnNavigationItemSelectedListener, ConnectivityReceiver.ConnectivityReceiverListener
 {
     BlockPruebaAdapter adapter;
+    private ArrayList<String> exptime = new ArrayList();
     private ArrayList<String> appointment_dates = new ArrayList();
+    private ArrayList<String> cardiologyDatePatient = new ArrayList();
     private ArrayList<String> appointment_datesx = new ArrayList();
     private ArrayList<String> appointment_id = new ArrayList();
     private ArrayList<String> appointment_idx = new ArrayList();
@@ -66,7 +68,7 @@ public class nav_d
     private ArrayList<String> locations = new ArrayList();
     private ArrayList<String> longitudes = new ArrayList();
     private ArrayList<String> names = new ArrayList();
-    private ArrayList<String> namesx = new ArrayList();
+    private ArrayList<String> tokenx = new ArrayList();
     TextView p_id;
     String patient_id = "";
     private ProgressDialog progressDialog;
@@ -107,18 +109,16 @@ public class nav_d
         {
             public void onRefresh()
             {
-                nav_d.this.readData();
-                nav_d.this.swipeRefreshLayout.setRefreshing(false);
+                readDatax();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
         DrawerLayout localDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout, localToolbar, 2131755188, 2131755187);
+        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout, localToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         localDrawerLayout.addDrawerListener(localActionBarDrawerToggle);
         localActionBarDrawerToggle.syncState();
         ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(this);
     }
-
-
     public static boolean deleteDir(File paramFile)
     {
         if ((paramFile != null) && (paramFile.isDirectory()))
@@ -148,8 +148,10 @@ public class nav_d
         this.loc_ids.clear();
         this.hospital_noa.clear();
         this.invoice_nos.clear();
-        BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.patients_record), Charset.forName("UTF-8")));
+        BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader
+                (getResources().openRawResource(R.raw.patients_record), Charset.forName("UTF-8")));
         Object localObject = "";
+
         for (;;)
         {
             try
@@ -175,23 +177,27 @@ public class nav_d
                 }
                 else
                 {
-                    Boolean localBoolean = Boolean.valueOf(ConnectivityReceiver.isConnected());
+                 /*  Boolean localBoolean = Boolean.valueOf(ConnectivityReceiver.isConnected());
                     if (localBoolean.booleanValue())
-                    {
+                    {*/
                         read_latlong();
-                        read_status();
-                    }
-                    else if (!localBoolean.booleanValue())
-                    {
+                       // read_status();
+                    //}
+                  // else if (!localBoolean.booleanValue())
+                    //{
                         this.username.setText(names.get(0));
                         this.p_id.setText(this.patient_id);
                         this.progressDialog.cancel();
-                        showSnack(false);
+                       // showSnack(false);
                         read_latlong();
-                        BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(this.appointment_id, this.appointment_dates, this.appointment_times, this.names, this.clinics, this.locations, this.hospital_noa, this.invoice_nos, this.latitudes, this.longitudes, this.statust);
+                        BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(this.appointment_id,
+                                this.appointment_dates, this.appointment_times, this.names,
+                                this.clinics, this.locations, this.hospital_noa, this.invoice_nos,
+                                this.latitudes, this.longitudes, this.statust);
+
                         this.adapter = localBlockPruebaAdapter;
                         this.recyclerview.setAdapter(this.adapter);
-                    }
+                    //}
                     return;
                 }
             }
@@ -209,10 +215,11 @@ public class nav_d
 
     private void readDatax()
     {
-        this.appointment_id.clear();
-        this.appointment_dates.clear();
-        this.appointment_times.clear();
-        this.names.clear();
+        appointment_idx.clear();
+        cardiologyDatePatient.clear();
+        appointment_datesx.clear();
+        appointment_timesx.clear();
+        tokenx.clear();
         BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.patients_record), Charset.forName("UTF-8")));
         Object localObject = "";
         int i = 1;
@@ -227,17 +234,25 @@ public class nav_d
                     String[] arrayOfString = ((String)localObject).split(",");
                     if ((arrayOfString[6].equals("CARDIOLOGY")) && (arrayOfString[4].equals("22-03-2019")) && (!arrayOfString[11].equals("0")))
                     {
-                        this.appointment_idx.add(arrayOfString[1]);
-                        this.appointment_datesx.add(String.valueOf(i));
-                        this.appointment_timesx.add(arrayOfString[3]);
-                        this.namesx.add(arrayOfString[11]);
+                        appointment_idx.add(arrayOfString[1]);
+                        cardiologyDatePatient.add(arrayOfString[2]);
+                        appointment_datesx.add(String.valueOf(i));
+                        appointment_timesx.add(arrayOfString[3]);
+                        tokenx.add(arrayOfString[11]);
                         i++;
                     }
                 }
                 else
                 {
-                    this.dashboard_adapter = new dashboard_adapter(this.appointment_idx, this.appointment_datesx, this.appointment_timesx, this.namesx);
-                    this.recyclerviewx.setAdapter(this.dashboard_adapter);
+                    Boolean isconnected=ConnectivityReceiver.isConnected();
+                   if(!isconnected) {
+                       dashboard_adapter = new dashboard_adapter(appointment_idx, appointment_datesx, appointment_timesx, tokenx,appointment_timesx);
+                       recyclerviewx.setAdapter(dashboard_adapter);
+                   }
+                   else
+                   {
+                       cardiologyFirebase();
+                   }
                     return;
                 }
             }
@@ -252,7 +267,39 @@ public class nav_d
             }
         }
     }
+private void cardiologyFirebase()
+{
+    //readDatax();
 
+    exptime.clear();
+    appoitments.addValueEventListener(new ValueEventListener()
+    {
+        public void onCancelled(@NonNull DatabaseError paramAnonymousDatabaseError) {}
+
+        public void onDataChange(@NonNull DataSnapshot paramAnonymousDataSnapshot)
+        {
+            exptime.clear();
+            Iterator localIterator = paramAnonymousDataSnapshot.getChildren().iterator();
+            while (localIterator.hasNext())
+            {
+                DataSnapshot localDataSnapshot = (DataSnapshot)localIterator.next();
+                for (int i = 0; i < cardiologyDatePatient.size(); i++)
+                {
+
+                    if (localDataSnapshot.getKey().equals(cardiologyDatePatient.get(i)))
+                    {
+
+                            exptime.add(localDataSnapshot.getValue().toString());
+
+                    }
+                }
+            }
+            dashboard_adapter = new dashboard_adapter(appointment_idx, appointment_datesx,appointment_timesx, tokenx,exptime);
+            recyclerviewx.setAdapter(dashboard_adapter);
+            //progressDialog.cancel();
+        }
+    });
+}
     private void read_latlong()
     {
         BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.cmc_lat_longs), Charset.forName("UTF-8")));
@@ -286,7 +333,39 @@ public class nav_d
             localIOException.printStackTrace();
         }
     }
+    void read_status()
+    {
+        new StringBuffer();
+        appoitments.addValueEventListener(new ValueEventListener()
+        {
+            public void onCancelled(@NonNull DatabaseError paramAnonymousDatabaseError) {}
 
+            public void onDataChange(@NonNull DataSnapshot paramAnonymousDataSnapshot)
+            {
+                status.clear();
+                Iterator localIterator = paramAnonymousDataSnapshot.getChildren().iterator();
+                while (localIterator.hasNext())
+                {
+                    DataSnapshot localDataSnapshot = (DataSnapshot)localIterator.next();
+                    for (int i = 0; i < appointment_id.size(); i++) {
+                        if (localDataSnapshot.getKey().equals(appointment_id.get(i))) {
+                            status.add(localDataSnapshot.getValue().toString());
+                        }
+                    }
+                }
+                username.setText((CharSequence)names.get(0));
+                p_id.setText(patient_id);
+                nav_d localnav_d = nav_d.this;
+                BlockPruebaAdapter localBlockPruebaAdapter =
+                        new BlockPruebaAdapter(localnav_d.appointment_id, appointment_dates,
+                                appointment_times, names, clinics, locations, hospital_noa,
+                                invoice_nos, latitudes, longitudes, status);
+                localnav_d.adapter = localBlockPruebaAdapter;
+                recyclerview.setAdapter(adapter);
+                progressDialog.cancel();
+            }
+        });
+    }
     private void showSnack(boolean isConnected)
     {
         String message;
@@ -336,8 +415,8 @@ public class nav_d
         {
             public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt)
             {
-                nav_d.this.moveTaskToBack(true);
-                nav_d.this.finish();
+                moveTaskToBack(true);
+                finish();
             }
         }).setNegativeButton("No", null).show();
     }
@@ -387,20 +466,20 @@ public class nav_d
                     Splash.savePreferences("userlogin", "");
                     nav_d localnav_d3 = nav_d.this;
                     localnav_d3.deleteCache(localnav_d3.getApplicationContext());
-                    Intent localIntent = new Intent(nav_d.this.getApplicationContext(), users.class);
+                    Intent localIntent = new Intent(getApplicationContext(), users.class);
                     localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     StringBuilder localStringBuilder = new StringBuilder();
                     localStringBuilder.append("/data/data/");
-                    localStringBuilder.append(nav_d.this.getPackageName());
+                    localStringBuilder.append(getPackageName());
                     localStringBuilder.append("/shared_prefs/");
                     File[] arrayOfFile = new File(localStringBuilder.toString()).listFiles();
                     int i = arrayOfFile.length;
                     for (int j = 0; j < i; j++) {
                         arrayOfFile[j].delete();
                     }
-                    nav_d.this.startActivity(localIntent);
+                    startActivity(localIntent);
                 }
             });
             this.builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -439,36 +518,7 @@ public class nav_d
         MyApplication.getInstance().setConnectivityListener(this);
     }
 
-    void read_status()
-    {
-        new StringBuffer();
-        this.appoitments.addValueEventListener(new ValueEventListener()
-        {
-            public void onCancelled(@NonNull DatabaseError paramAnonymousDatabaseError) {}
 
-            public void onDataChange(@NonNull DataSnapshot paramAnonymousDataSnapshot)
-            {
-                nav_d.this.status.clear();
-                Iterator localIterator = paramAnonymousDataSnapshot.getChildren().iterator();
-                while (localIterator.hasNext())
-                {
-                    DataSnapshot localDataSnapshot = (DataSnapshot)localIterator.next();
-                    for (int i = 0; i < nav_d.this.appointment_id.size(); i++) {
-                        if (localDataSnapshot.getKey().equals(nav_d.this.appointment_id.get(i))) {
-                            status.add(localDataSnapshot.getValue().toString());
-                        }
-                    }
-                }
-                nav_d.this.username.setText((CharSequence)nav_d.this.names.get(0));
-                nav_d.this.p_id.setText(nav_d.this.patient_id);
-                nav_d localnav_d = nav_d.this;
-                BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(localnav_d.appointment_id, nav_d.this.appointment_dates, nav_d.this.appointment_times, nav_d.this.names, nav_d.this.clinics, nav_d.this.locations, nav_d.this.hospital_noa, nav_d.this.invoice_nos, nav_d.this.latitudes, nav_d.this.longitudes, nav_d.this.status);
-                localnav_d.adapter = localBlockPruebaAdapter;
-                nav_d.this.recyclerview.setAdapter(nav_d.this.adapter);
-                nav_d.this.progressDialog.cancel();
-            }
-        });
-    }
 }
 
 /* Location:           C:\Users\Utsav Gupta\Downloads\debug\dex2jar-0.0.9.15\dex2jar-0.0.9.15\classes3_dex2jar.jar * Qualified Name:     com.utsavgupta.cmclage.nav_d * JD-Core Version:    0.7.0.1 */

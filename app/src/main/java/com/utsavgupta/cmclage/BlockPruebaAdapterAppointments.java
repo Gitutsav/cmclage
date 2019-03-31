@@ -238,7 +238,8 @@ public class BlockPruebaAdapterAppointments extends RecyclerView.Adapter<BlockPr
                            nagDialog.dismiss();
                        }
                    });
-                   ivPreview.setOnClickListener(new View.OnClickListener() {
+                   ivPreview.setOnClickListener(new View.OnClickListener()
+                   {
                        @Override
                        public void onClick(View view) {
                            double latitudes = Double.parseDouble(invoices);

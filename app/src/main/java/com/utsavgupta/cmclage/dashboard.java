@@ -100,25 +100,25 @@ public class dashboard
                 }
                 else
                 {
-                    Boolean localBoolean = Boolean.valueOf(ConnectivityReceiver.isConnected());
-                    if (localBoolean.booleanValue())
-                    {
+                   // Boolean localBoolean = Boolean.valueOf(ConnectivityReceiver.isConnected());
+                    //if (localBoolean.booleanValue())
+                   // {
                         read_latlong();
-                        read_status();
-                    }
-                    else if (!localBoolean.booleanValue())
-                    {
+                        //read_status();
+                   // }
+                  //  else if (!localBoolean.booleanValue())
+                    //{
                         username.setText((CharSequence)names.get(0));
                         p_id.setText(patient_id);
                         progressDialog.cancel();
-                        showSnack(false);
+                       // showSnack(false);
                         read_latlong();
                         BlockPruebaAdapterAppointments localBlockPruebaAdapterAppointments = new BlockPruebaAdapterAppointments(appointment_id, 
                                 appointment_dates, appointment_times, names, clinics, locations, hospital_noa, invoice_nos,
                                 latitudes, longitudes, statust);
                         adapter = localBlockPruebaAdapterAppointments;
                         recyclerview.setAdapter(adapter);
-                    }
+                    //}
                     return;
                 }
             }
