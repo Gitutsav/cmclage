@@ -59,6 +59,7 @@ public class mro extends AppCompatActivity
     private ArrayList<String> status = new ArrayList<>();
     private ArrayList<String> statust = new ArrayList<>();
     private ArrayList<String> mobile = new ArrayList<>();
+    private ArrayList<String> pname = new ArrayList<>();
     String patient_id="";
     BlockPruebaAdapter_mro adapter;
     private RecyclerView recyclerView;
@@ -196,7 +197,7 @@ public class mro extends AppCompatActivity
                // username.setText("MRO");
                 //p_id.setText(patient_id);
                 adapter=new BlockPruebaAdapter_mro(appointment_id,appointment_dates,appointment_times,names,clinics,
-                        locations,hospital_noa,invoice_nos,latitudes,longitudes,status,mobile);
+                        locations,hospital_noa,invoice_nos,latitudes,longitudes,status,mobile,pname);
                 recyclerview.setAdapter(adapter);
                 progressDialog.cancel();
                 // Toast.makeText(getApplicationContext(),status.toString(),Toast.LENGTH_LONG).show();
@@ -211,7 +212,7 @@ public class mro extends AppCompatActivity
     }
     private void readData() {
         appointment_id.clear();appointment_dates.clear();appointment_times.clear();names.clear();clinics.clear();
-        locations.clear();loc_ids.clear();hospital_noa.clear();invoice_nos.clear();mobile.clear();
+        locations.clear();loc_ids.clear();hospital_noa.clear();invoice_nos.clear();mobile.clear();pname.clear();
         InputStream is = getResources().openRawResource(R.raw.patients_record);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         String line = "";
@@ -226,6 +227,7 @@ public class mro extends AppCompatActivity
                 appointment_dates.add(tokens[4]);
                 appointment_times.add(tokens[3]);
                 names.add(tokens[5]);
+                pname.add(tokens[5]);
                 clinics.add(tokens[6]);
                 locations.add(tokens[7]);
                 loc_ids.add(tokens[8]);
@@ -266,7 +268,7 @@ public class mro extends AppCompatActivity
                 read_latlong();
 
                 adapter=new BlockPruebaAdapter_mro(appointment_id,appointment_dates,appointment_times,names,clinics,
-                        locations,hospital_noa,invoice_nos,latitudes,longitudes,statust,mobile);
+                        locations,hospital_noa,invoice_nos,latitudes,longitudes,statust,mobile,pname);
                 recyclerview.setAdapter(adapter);
 
             }

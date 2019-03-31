@@ -1,12 +1,20 @@
 package com.utsavgupta.cmclage;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,15 +59,21 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
     private List<String> status = new ArrayList<>();
     private List<String> longitudes = new ArrayList<>();String patient_id;
     private List<String> mobiles=new ArrayList<>();
+    private List<String> pname=new ArrayList<>();
     AlertDialog.Builder builder1;
     String[] escrito;
     ProgressDialog dialog;
-    private Context context;
+    private Context context; private final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+
+    private final String SENT = "SMS_SENT";
+    private final String DELIVERED = "SMS_DELIVERED";
+    PendingIntent sentPI, deliveredPI;
+    BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
     private DatabaseReference appoitments;
 
     public BlockPruebaAdapter_mro(List<String> appointment_id, List<String> appointment_date, List<String> appointment_time, List<String> names, List<String> clinics,
                                   List<String> locations, List<String> latitude, List<String> hospitals, List<String> invoice,
-                                  List<String> longitude, List<String> status,List<String> mobile) {
+                                  List<String> longitude, List<String> status,List<String> mobile,List<String> name) {
     this.appointment_id=appointment_id;
     this.appointment_dates=appointment_date;
     this.appointment_times=appointment_time;
@@ -71,6 +85,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
     this.invoice_nos=invoice;
     this.status=status;
     this.mobiles=mobile;
+    this.pname=name;
     //this.datex=dates;
       //escrito = new String[lista.size()];
     }
@@ -80,6 +95,8 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_pateint_record_mro,parent,false);
         //this.bstt=new Block_submit_tables_teachers(v.getContext());
         context=v.getContext();
+        sentPI = PendingIntent.getBroadcast(context, 0, new Intent(SENT), 0);
+        deliveredPI = PendingIntent.getBroadcast(context, 0, new Intent(DELIVERED), 0);
 
         return new PruebaViewHolder(v);
 
@@ -98,9 +115,10 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
          String app_id=appointment_id.get(position);
          String stat=status.get(position);
          String mobile=mobiles.get(position);
+         String name=pname.get(position);
         // String date=datex.get(position);
 
-         holder.bindProducto(app_id,date,time,clinic,hospital,lat,longs,invoice,loc,stat,mobile);
+         holder.bindProducto(app_id,date,time,clinic,hospital,lat,longs,invoice,loc,stat,mobile,name);
     }
 
     @Override
@@ -202,7 +220,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
 
         public void bindProducto(final String app_id, String dates, String times, String clinics,
                                  String hospitals, final String lats, final String longs,
-                                 final String invoices, final String loc, String stat, String mobile)
+                                 final String invoices, final String loc, String stat, String mobile, String name)
 
         {
            invoice.setText(lats);
@@ -226,12 +244,58 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
                  //  int txt= Integer.parseInt(statts.getText().toString().trim());
                   // if(txt<=20 && txt>=0) {
                        appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
-                       appoitments.child(app_id).setValue(statts.getText().toString().trim());
+                       String extime=statts.getText().toString().trim();
+                       appoitments.child(app_id).setValue(extime);
+
                        Toast.makeText(context,"Updated",Toast.LENGTH_SHORT).show();
                   /* }
                    else{
                        Toast.makeText(context,"Invalid Queue Number",Toast.LENGTH_SHORT).show();
                    }*/
+                   String messagem = name+" "+mobile+" Please report at "+extime;
+                   String telNrm  ="+91"+mobile;
+
+
+
+                   if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS)
+                           != PackageManager.PERMISSION_GRANTED)
+                   {
+                       ActivityCompat.requestPermissions((Activity) context, new String [] {Manifest.permission.SEND_SMS},
+                               MY_PERMISSIONS_REQUEST_SEND_SMS);
+                   }
+                   else
+                   {
+                       SmsManager sms = SmsManager.getDefault();
+
+                       //phone - Recipient's phone number
+                       //address - Service Center Address (null for default)
+                       //message - SMS message to be sent
+                       //piSent - Pending intent to be invoked when the message is sent
+                       //piDelivered - Pending intent to be invoked when the message is delivered to the recipient
+                       sms.sendTextMessage(telNrm, null, messagem, sentPI, deliveredPI);
+                   }
+                   boolean isWhatsappInstalled = whatsappInstalledOrNot("com.whatsapp");
+                   if (isWhatsappInstalled) {
+               /*    Uri uri = Uri.parse("smsto:" + "916388141630");
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.setData(uri);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hai Good Morning");
+                    sendIntent.setType("text/plain");
+                    sendIntent.setPackage("com.whatsapp");
+
+                  //  startActivity(Intent.createChooser(sendIntent, ""));
+                    startActivity(sendIntent);*/
+                       context.startActivity(new Intent(Intent.ACTION_VIEW,
+                               Uri.parse(
+                                       "https://api.whatsapp.com/send?phone=+91"+mobile+"&text="+name+"%20"+mobile+"%20Please%20report%20at%20"+extime
+                               )));
+                   } else {
+                       Toast.makeText(context, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+                       Uri uri = Uri.parse("market://details?id=com.whatsapp");
+                       Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                       context.startActivity(goToMarket);
+
+                   }
                }
            });
 
@@ -250,5 +314,16 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
 
         }
 
+    }
+    private boolean whatsappInstalledOrNot(String uri) {
+        PackageManager pm = context.getPackageManager();
+        boolean app_installed = false;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 }

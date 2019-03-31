@@ -193,7 +193,7 @@ public class nav_d
                     //{
                         this.username.setText(names.get(0));
                         this.p_id.setText(this.patient_id);
-                        this.progressDialog.cancel();
+
                        // showSnack(false);
                         read_latlong();
                         BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(this.appointment_id,
@@ -254,6 +254,7 @@ public class nav_d
                    if(!isconnected) {
                        dashboard_adapter = new dashboard_adapter(appointment_idx, appointment_datesx, appointment_timesx, tokenx,appointment_timesx);
                        recyclerviewx.setAdapter(dashboard_adapter);
+                       this.progressDialog.cancel();
                    }
                    else
                    {
@@ -302,7 +303,7 @@ private void cardiologyFirebase()
             }
             dashboard_adapter = new dashboard_adapter(appointment_idx, appointment_datesx,appointment_timesx, tokenx,exptime);
             recyclerviewx.setAdapter(dashboard_adapter);
-            //progressDialog.cancel();
+            progressDialog.cancel();
         }
     });
 }
