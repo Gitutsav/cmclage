@@ -50,6 +50,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
     private List<String> latitudes = new ArrayList<>();
     private List<String> status = new ArrayList<>();
     private List<String> longitudes = new ArrayList<>();String patient_id;
+    private List<String> mobiles=new ArrayList<>();
     AlertDialog.Builder builder1;
     String[] escrito;
     ProgressDialog dialog;
@@ -58,7 +59,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
 
     public BlockPruebaAdapter_mro(List<String> appointment_id, List<String> appointment_date, List<String> appointment_time, List<String> names, List<String> clinics,
                                   List<String> locations, List<String> latitude, List<String> hospitals, List<String> invoice,
-                                  List<String> longitude, List<String> status) {
+                                  List<String> longitude, List<String> status,List<String> mobile) {
     this.appointment_id=appointment_id;
     this.appointment_dates=appointment_date;
     this.appointment_times=appointment_time;
@@ -69,6 +70,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
     this.hospital_noa=hospitals;
     this.invoice_nos=invoice;
     this.status=status;
+    this.mobiles=mobile;
     //this.datex=dates;
       //escrito = new String[lista.size()];
     }
@@ -95,9 +97,10 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
          String loc=locations.get(position);
          String app_id=appointment_id.get(position);
          String stat=status.get(position);
+         String mobile=mobiles.get(position);
         // String date=datex.get(position);
 
-         holder.bindProducto(app_id,date,time,clinic,hospital,lat,longs,invoice,loc,stat);
+         holder.bindProducto(app_id,date,time,clinic,hospital,lat,longs,invoice,loc,stat,mobile);
     }
 
     @Override
@@ -199,7 +202,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
 
         public void bindProducto(final String app_id, String dates, String times, String clinics,
                                  String hospitals, final String lats, final String longs,
-                                 final String invoices, final String loc, String stat)
+                                 final String invoices, final String loc, String stat, String mobile)
 
         {
            invoice.setText(lats);
@@ -220,15 +223,15 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
            navigate.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
-                   int txt= Integer.parseInt(statts.getText().toString().trim());
-                   if(txt<=20 && txt>=0) {
+                 //  int txt= Integer.parseInt(statts.getText().toString().trim());
+                  // if(txt<=20 && txt>=0) {
                        appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
                        appoitments.child(app_id).setValue(statts.getText().toString().trim());
                        Toast.makeText(context,"Updated",Toast.LENGTH_SHORT).show();
-                   }
+                  /* }
                    else{
                        Toast.makeText(context,"Invalid Queue Number",Toast.LENGTH_SHORT).show();
-                   }
+                   }*/
                }
            });
 

@@ -184,7 +184,7 @@ public class dashboard_adapter extends RecyclerView.Adapter<dashboard_adapter.Pr
 
         public void bindProducto(String date, String app_id, String times, String tokens, String exptimes) {
             //if (!times.equals(exptimes)){
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+               /* NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
             mBuilder.setSmallIcon(R.drawable.cmc_image);
             mBuilder.setContentTitle("Notification Alert, Click Me!");
             mBuilder.setContentText("Hi, This is Android Notification Detail!");
@@ -199,7 +199,7 @@ public class dashboard_adapter extends RecyclerView.Adapter<dashboard_adapter.Pr
 // Adds the Intent that starts the Activity to the top of the stack
             stackBuilder.addNextIntent(resultIntent);
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setContentIntent(resultPendingIntent);*/
      //   }
             Animation anim = new AlphaAnimation(0.0f,1.0f );
             anim.setDuration(800); //You can manage the blinking time with this parameter
@@ -216,7 +216,7 @@ public class dashboard_adapter extends RecyclerView.Adapter<dashboard_adapter.Pr
             //token.startAnimation(anim);
             //manageBlinkEffect(token);
             if(token.getText().toString().equals("03")){
-                manageBlinkEffect(token);
+                manageBlinkEffect(extime);
                 //token.startAnimation(anim);
             }
          /*  appoint_id.setText(app_id);

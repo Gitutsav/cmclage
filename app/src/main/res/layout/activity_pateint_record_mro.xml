@@ -225,7 +225,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:textAlignment="center"
-                    android:textSize="20dp"
+                    android:textSize="14dp"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     android:text="12" />

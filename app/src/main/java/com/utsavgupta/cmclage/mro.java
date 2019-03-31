@@ -58,6 +58,7 @@ public class mro extends AppCompatActivity
     private ArrayList<String> longitudes = new ArrayList<>();
     private ArrayList<String> status = new ArrayList<>();
     private ArrayList<String> statust = new ArrayList<>();
+    private ArrayList<String> mobile = new ArrayList<>();
     String patient_id="";
     BlockPruebaAdapter_mro adapter;
     private RecyclerView recyclerView;
@@ -195,7 +196,7 @@ public class mro extends AppCompatActivity
                // username.setText("MRO");
                 //p_id.setText(patient_id);
                 adapter=new BlockPruebaAdapter_mro(appointment_id,appointment_dates,appointment_times,names,clinics,
-                        locations,hospital_noa,invoice_nos,latitudes,longitudes,status);
+                        locations,hospital_noa,invoice_nos,latitudes,longitudes,status,mobile);
                 recyclerview.setAdapter(adapter);
                 progressDialog.cancel();
                 // Toast.makeText(getApplicationContext(),status.toString(),Toast.LENGTH_LONG).show();
@@ -210,7 +211,7 @@ public class mro extends AppCompatActivity
     }
     private void readData() {
         appointment_id.clear();appointment_dates.clear();appointment_times.clear();names.clear();clinics.clear();
-        locations.clear();loc_ids.clear();hospital_noa.clear();invoice_nos.clear();
+        locations.clear();loc_ids.clear();hospital_noa.clear();invoice_nos.clear();mobile.clear();
         InputStream is = getResources().openRawResource(R.raw.patients_record);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         String line = "";
@@ -231,6 +232,7 @@ public class mro extends AppCompatActivity
                 hospital_noa.add(tokens[9]);
                 invoice_nos.add(tokens[10]);
                 statust.add(tokens[11]);
+                mobile.add(tokens[12]);
             //}
 
 
@@ -264,7 +266,7 @@ public class mro extends AppCompatActivity
                 read_latlong();
 
                 adapter=new BlockPruebaAdapter_mro(appointment_id,appointment_dates,appointment_times,names,clinics,
-                        locations,hospital_noa,invoice_nos,latitudes,longitudes,statust);
+                        locations,hospital_noa,invoice_nos,latitudes,longitudes,statust,mobile);
                 recyclerview.setAdapter(adapter);
 
             }

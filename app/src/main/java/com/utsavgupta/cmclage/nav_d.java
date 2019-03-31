@@ -1,6 +1,9 @@
 package com.utsavgupta.cmclage;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -22,6 +25,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -78,6 +82,8 @@ public class nav_d
     private ArrayList<String> statust = new ArrayList();
     private SwipeRefreshLayout swipeRefreshLayout;
     TextView username;
+    private int NOTIFY_ME_ID=1124;
+
     protected void onCreate(Bundle paramBundle)
     {
         super.onCreate(paramBundle);
@@ -350,6 +356,7 @@ private void cardiologyFirebase()
                     for (int i = 0; i < appointment_id.size(); i++) {
                         if (localDataSnapshot.getKey().equals(appointment_id.get(i))) {
                             status.add(localDataSnapshot.getValue().toString());
+
                         }
                     }
                 }
