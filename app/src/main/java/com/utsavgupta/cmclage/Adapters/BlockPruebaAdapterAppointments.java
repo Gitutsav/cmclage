@@ -1,4 +1,4 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.Adapters;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.utsavgupta.cmclage.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;*/
 
 
-public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.PruebaViewHolder> {
+public class BlockPruebaAdapterAppointments extends RecyclerView.Adapter<BlockPruebaAdapterAppointments.PruebaViewHolder> {
     //private Block_submit_tables_teachers bstt;
     private List<String> appointment_times = new ArrayList<>();
     private List<String> appointment_id = new ArrayList<>();
@@ -50,9 +52,9 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
     ProgressDialog dialog;
     private Context context;
 
-    public BlockPruebaAdapter(List<String> appointment_id,List<String> appointment_date, List<String> appointment_time, List<String> names, List<String> clinics,
-                              List<String> locations, List<String> latitude, List<String> hospitals, List<String> invoice,
-                              List<String> longitude,List<String> status) {
+    public BlockPruebaAdapterAppointments(List<String> appointment_id, List<String> appointment_date, List<String> appointment_time, List<String> names, List<String> clinics,
+                                          List<String> locations, List<String> latitude, List<String> hospitals, List<String> invoice,
+                                          List<String> longitude, List<String> status) {
     this.appointment_id=appointment_id;
     this.appointment_dates=appointment_date;
     this.appointment_times=appointment_time;
@@ -97,7 +99,7 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
 
     @Override
     public int getItemCount() {
-        return 1;
+        return appointment_dates.size();
     }
 
     public String[] getEscrito() {
@@ -203,8 +205,7 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
            date.setText(dates);
            location.setText(loc);
            appoint_id.setText(app_id);
-           if(stat.equals("0"))
-               {
+           if(stat.equals("0")){
                statts.setVisibility(View.GONE);
                done.setVisibility(View.VISIBLE);
                }
@@ -239,7 +240,8 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
                            nagDialog.dismiss();
                        }
                    });
-                   ivPreview.setOnClickListener(new View.OnClickListener() {
+                   ivPreview.setOnClickListener(new View.OnClickListener()
+                   {
                        @Override
                        public void onClick(View view) {
                            double latitudes = Double.parseDouble(invoices);
@@ -250,7 +252,7 @@ public class BlockPruebaAdapter extends RecyclerView.Adapter<BlockPruebaAdapter.
                            String encodedQuery = Uri.encode(query);
                            String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
                            Uri uri = Uri.parse(uriString);
-                           Intent mapIntent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+                           Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
                            mapIntent.setPackage("com.google.android.apps.maps");
                            context.startActivity(mapIntent);
                            nagDialog.dismiss();

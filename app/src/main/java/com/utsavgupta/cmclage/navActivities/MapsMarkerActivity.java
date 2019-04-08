@@ -1,4 +1,4 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.navActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.utsavgupta.cmclage.R;
 
 import java.util.Arrays;
 import java.util.List;

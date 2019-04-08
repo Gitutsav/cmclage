@@ -1,4 +1,4 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.Connectivity;
 
 import android.app.Application;
 

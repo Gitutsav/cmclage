@@ -1,9 +1,7 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.Adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.utsavgupta.cmclage.R;
 
 import java.util.ArrayList;
 import java.util.List;

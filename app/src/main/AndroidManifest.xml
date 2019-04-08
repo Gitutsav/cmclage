@@ -34,14 +34,14 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".MyApplication"
+        android:name=".Connectivity.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/cmc_image"
         android:label="@string/app_name"
         android:roundIcon="@drawable/cmc_image"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".dashboard"
+        <activity android:name=".navActivities.dashboard"
             android:theme="@style/AppFullScreenTheme"
             ></activity>
 
@@ -52,20 +52,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_api_key" />
 
-        <activity android:name=".MapsMarkerActivity" />
+        <activity android:name=".navActivities.MapsMarkerActivity" />
         <activity android:name=".OfflineMap" />
-        <activity android:name=".mapbox" />
+        <activity android:name=".mapbox.mapbox" />
         <activity
-            android:name=".search_symptom"
+            android:name=".navActivities.search_symptom"
             android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".mro"
             android:theme="@style/AppFullScreenTheme" />
         <activity
-            android:name=".About"
+            android:name=".navActivities.About"
             android:theme="@style/AppFullScreenTheme" />
         <activity
-            android:name=".navigation"
+            android:name=".navActivities.navigation"
             android:theme="@style/AppFullScreenTheme" />
         <activity android:name=".MainActivity" />
         <activity android:name=".login" />
@@ -80,7 +80,7 @@
         </activity>
 
         <receiver
-            android:name=".ConnectivityReceiver"
+            android:name=".Connectivity.ConnectivityReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -95,7 +95,7 @@
             android:label="CMC Lage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".suggestion"
+            android:name=".navActivities.suggestion"
             android:theme="@style/AppFullScreenTheme" />
     </application>
 

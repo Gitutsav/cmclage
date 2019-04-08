@@ -1,45 +1,46 @@
 package com.utsavgupta.cmclage;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.utsavgupta.cmclage.Adapters.BlockPruebaAdapter;
+import com.utsavgupta.cmclage.Adapters.dashboard_adapter;
+import com.utsavgupta.cmclage.Connectivity.ConnectivityReceiver;
+import com.utsavgupta.cmclage.Connectivity.MyApplication;
+import com.utsavgupta.cmclage.navActivities.MapsMarkerActivity;
+import com.utsavgupta.cmclage.navActivities.About;
+import com.utsavgupta.cmclage.navActivities.dashboard;
+import com.utsavgupta.cmclage.navActivities.navigation;
+import com.utsavgupta.cmclage.navActivities.search_symptom;
+import com.utsavgupta.cmclage.navActivities.suggestion;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class nav_d
     DatabaseReference appoitments;
     private AlertDialog.Builder builder1;
     private ArrayList<String> clinics = new ArrayList();
-    dashboard_adapter dashboard_adapter;
+    com.utsavgupta.cmclage.Adapters.dashboard_adapter dashboard_adapter;
     private ArrayList<String> hospital_noa = new ArrayList();
     private ArrayList<String> invoice_nos = new ArrayList();
     private ArrayList<String> latitudes = new ArrayList();
@@ -73,7 +74,7 @@ public class nav_d
     private ArrayList<String> longitudes = new ArrayList();
     private ArrayList<String> names = new ArrayList();
     private ArrayList<String> tokenx = new ArrayList();
-    TextView p_id;
+    TextView p_id,department_name,date;
     String patient_id = "";
     private ProgressDialog progressDialog;
     private RecyclerView recyclerview;
@@ -91,27 +92,30 @@ public class nav_d
         Toolbar localToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(localToolbar);
         getSupportActionBar().setElevation(0.0F);
-        this.username = ((TextView)findViewById(R.id.username));
-        this.p_id = ((TextView)findViewById(R.id.level));
-        this.builder1 = new AlertDialog.Builder(this);
-        this.builder1.setCancelable(false);
-        this.swipeRefreshLayout = ((SwipeRefreshLayout)findViewById(R.id.simpleSwipeRefreshLayout));
-        this.appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
+        department_name=(TextView) findViewById(R.id.dept);
+        date=(TextView)findViewById(R.id.date);
+        username = ((TextView)findViewById(R.id.username));
+        p_id = ((TextView)findViewById(R.id.level));
+        builder1 = new AlertDialog.Builder(this);
+        builder1.setCancelable(false);
+        swipeRefreshLayout = ((SwipeRefreshLayout)findViewById(R.id.simpleSwipeRefreshLayout));
+        appoitments = FirebaseDatabase.getInstance().getReference("appointmentIdsx");
         Splash.savePreferences("userlogin", "logged_in");
-        this.progressDialog = new ProgressDialog(this);
-        this.progressDialog.setCancelable(false);
-        this.progressDialog.setMessage("Fetching Data, please wait.");
-        this.progressDialog.show();
-        this.recyclerviewx = ((RecyclerView)findViewById(R.id.recyclerViewx));
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Fetching Data, please wait.");
+        progressDialog.show();
+        recyclerviewx = ((RecyclerView)findViewById(R.id.recyclerViewx));
         LinearLayoutManager localLinearLayoutManager1 = new LinearLayoutManager(getApplicationContext());
-        this.recyclerviewx.setLayoutManager(localLinearLayoutManager1);
-        readDatax();
-        this.recyclerview = ((RecyclerView)findViewById(R.id.recyclerView));
+        recyclerviewx.setLayoutManager(localLinearLayoutManager1);
+
+        recyclerview = ((RecyclerView)findViewById(R.id.recyclerView));
         LinearLayoutManager localLinearLayoutManager2 = new LinearLayoutManager(getApplicationContext());
-        this.recyclerview.setLayoutManager(localLinearLayoutManager2);
-        this.patient_id = getSharedPreferences("patient_detail", 0).getString("patient_id", null);
+        recyclerview.setLayoutManager(localLinearLayoutManager2);
+        patient_id = getSharedPreferences("patient_detail", 0).getString("patient_id", null);
         readData();
-        this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        readDatax();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             public void onRefresh()
             {
@@ -120,7 +124,8 @@ public class nav_d
             }
         });
         DrawerLayout localDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout, localToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle localActionBarDrawerToggle = new ActionBarDrawerToggle(this, localDrawerLayout,
+                localToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         localDrawerLayout.addDrawerListener(localActionBarDrawerToggle);
         localActionBarDrawerToggle.syncState();
         ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(this);
@@ -145,15 +150,15 @@ public class nav_d
 
     private void readData()
     {
-        this.appointment_id.clear();
-        this.appointment_dates.clear();
-        this.appointment_times.clear();
-        this.names.clear();
-        this.clinics.clear();
-        this.locations.clear();
-        this.loc_ids.clear();
-        this.hospital_noa.clear();
-        this.invoice_nos.clear();
+        appointment_id.clear();
+        appointment_dates.clear();
+        appointment_times.clear();
+        names.clear();
+        clinics.clear();
+        locations.clear();
+        loc_ids.clear();
+        hospital_noa.clear();
+        invoice_nos.clear();
         BufferedReader localBufferedReader = new BufferedReader(new InputStreamReader
                 (getResources().openRawResource(R.raw.patients_record), Charset.forName("UTF-8")));
         Object localObject = "";
@@ -167,18 +172,20 @@ public class nav_d
                 if (str != null)
                 {
                     String[] arrayOfString = ((String)localObject).split(",");
-                    if (this.patient_id.equalsIgnoreCase(arrayOfString[1]))
+                    if (patient_id.equalsIgnoreCase(arrayOfString[1]))
+                    { if(!(arrayOfString[11].equals("0")))
                     {
-                        this.appointment_id.add(arrayOfString[2]);
-                        this.appointment_dates.add(arrayOfString[4]);
-                        this.appointment_times.add(arrayOfString[3]);
-                        this.names.add(arrayOfString[5]);
-                        this.clinics.add(arrayOfString[6]);
-                        this.locations.add(arrayOfString[7]);
-                        this.loc_ids.add(arrayOfString[8]);
-                        this.hospital_noa.add(arrayOfString[9]);
-                        this.invoice_nos.add(arrayOfString[10]);
-                        this.statust.add(arrayOfString[11]);
+                        appointment_id.add(arrayOfString[2]);
+                        appointment_dates.add(arrayOfString[4]);
+                        appointment_times.add(arrayOfString[3]);
+                        names.add(arrayOfString[5]);
+                        clinics.add(arrayOfString[6]);
+                        locations.add(arrayOfString[7]);
+                        loc_ids.add(arrayOfString[8]);
+                        hospital_noa.add(arrayOfString[9]);
+                        invoice_nos.add(arrayOfString[10]);
+                        statust.add(arrayOfString[11]);
+                    }
                     }
                 }
                 else
@@ -191,19 +198,23 @@ public class nav_d
                     //}
                   // else if (!localBoolean.booleanValue())
                     //{
-                        this.username.setText(names.get(0));
-                        this.p_id.setText(this.patient_id);
+                        username.setText(names.get(0));
+                        p_id.setText(patient_id);
 
                        // showSnack(false);
                         read_latlong();
-                        BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(this.appointment_id,
-                                this.appointment_dates, this.appointment_times, this.names,
-                                this.clinics, this.locations, this.hospital_noa, this.invoice_nos,
-                                this.latitudes, this.longitudes, this.statust);
-
-                        this.adapter = localBlockPruebaAdapter;
-                        this.recyclerview.setAdapter(this.adapter);
+                        BlockPruebaAdapter localBlockPruebaAdapter = new BlockPruebaAdapter(appointment_id,
+                                appointment_dates, appointment_times, names,
+                                clinics, locations, hospital_noa, invoice_nos,
+                                latitudes, longitudes, statust);
+                        //showToast(appointment_dates.size()+"");
+                        adapter = localBlockPruebaAdapter;
+                        recyclerview.setAdapter(adapter);
                     //}
+                    SharedPreferences.Editor editor = getSharedPreferences("MY_PREFS_NAME", MODE_PRIVATE).edit();
+                    //editor.putString("name", "Elena");
+                    editor.putString("token", statust.get(0));
+                    editor.apply();
                     return;
                 }
             }
@@ -218,9 +229,10 @@ public class nav_d
             }
         }
     }
-
     private void readDatax()
     {
+      department_name.setText(clinics.get(0));
+      date.setText(appointment_dates.get(0));
         appointment_idx.clear();
         cardiologyDatePatient.clear();
         appointment_datesx.clear();
@@ -238,7 +250,8 @@ public class nav_d
                 if (str != null)
                 {
                     String[] arrayOfString = ((String)localObject).split(",");
-                    if ((arrayOfString[6].equals("CARDIOLOGY")) && (arrayOfString[4].equals("22-03-2019")) && (!arrayOfString[11].equals("0")))
+                    if ( (arrayOfString[6].equals(clinics.get(0))) && (arrayOfString[4].equals(appointment_dates.get(0)))
+                            && (!arrayOfString[11].equals("0")) && (arrayOfString[1].equals(patient_id)))
                     {
                         appointment_idx.add(arrayOfString[1]);
                         cardiologyDatePatient.add(arrayOfString[2]);
@@ -248,13 +261,13 @@ public class nav_d
                         i++;
                     }
                 }
-                else
+                 else
                 {
                     Boolean isconnected=ConnectivityReceiver.isConnected();
                    if(!isconnected) {
                        dashboard_adapter = new dashboard_adapter(appointment_idx, appointment_datesx, appointment_timesx, tokenx,appointment_timesx);
                        recyclerviewx.setAdapter(dashboard_adapter);
-                       this.progressDialog.cancel();
+                       progressDialog.cancel();
                    }
                    else
                    {
@@ -295,9 +308,7 @@ private void cardiologyFirebase()
 
                     if (localDataSnapshot.getKey().equals(cardiologyDatePatient.get(i)))
                     {
-
                             exptime.add(localDataSnapshot.getValue().toString());
-
                     }
                 }
             }
@@ -321,11 +332,11 @@ private void cardiologyFirebase()
                     break;
                 }
                 String[] arrayOfString = ((String)localObject).split(",");
-                for (int i = 0; i < this.loc_ids.size(); i++) {
-                    if (arrayOfString[1].equalsIgnoreCase((String)this.loc_ids.get(i)))
+                for (int i = 0; i < loc_ids.size(); i++) {
+                    if (arrayOfString[1].equalsIgnoreCase((String)loc_ids.get(i)))
                     {
-                        this.latitudes.add(arrayOfString[3]);
-                        this.longitudes.add(arrayOfString[4]);
+                        latitudes.add(arrayOfString[3]);
+                        longitudes.add(arrayOfString[4]);
                     }
                 }
             }
@@ -460,9 +471,9 @@ private void cardiologyFirebase()
         }
         else if (i == R.id.nav_logout)
         {
-            this.builder1.setTitle("Warning!");
-            this.builder1.setMessage("You will lose your previous activities data. Do you still want to proceed?");
-            this.builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+            builder1.setTitle("Warning!");
+            builder1.setMessage("You will lose your previous activities data. Do you still want to proceed?");
+            builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt)
                 {
@@ -490,14 +501,14 @@ private void cardiologyFirebase()
                     startActivity(localIntent);
                 }
             });
-            this.builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+            builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt)
                 {
                     paramAnonymousDialogInterface.cancel();
                 }
             });
-            this.builder1.create().show();
+            builder1.create().show();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -525,7 +536,10 @@ private void cardiologyFirebase()
         super.onResume();
         MyApplication.getInstance().setConnectivityListener(this);
     }
-
+private void showToast(String s)
+{
+    Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+}
 
 }
 

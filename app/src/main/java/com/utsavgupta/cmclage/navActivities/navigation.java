@@ -1,9 +1,7 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.navActivities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,12 +10,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.utsavgupta.cmclage.Adapters.xample_iteam;
+import com.utsavgupta.cmclage.Adapters.ExampleAdapter;
+import com.utsavgupta.cmclage.R;
+import com.utsavgupta.cmclage.nav_d;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +47,7 @@ ProgressDialog progressDialog;
             @Override
             public void onClick(View view) {
                 finishAffinity();
-                startActivity(new Intent(navigation.this,nav_d.class));
+                startActivity(new Intent(navigation.this, nav_d.class));
                // Animatoo.animateFade(getApplicationContext());
             }
         });

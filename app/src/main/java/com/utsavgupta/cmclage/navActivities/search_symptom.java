@@ -1,10 +1,7 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.navActivities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +11,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.utsavgupta.cmclage.Adapters.suggestion_adapter;
+import com.utsavgupta.cmclage.R;
+import com.utsavgupta.cmclage.nav_d;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -41,7 +41,8 @@ EditText text;
 TextView desc;
     private ArrayList<String> department = new ArrayList<>();
     private ArrayList<String> symptoms = new ArrayList<>();
-    private String status="";suggestion_adapter adapter;
+    private String status="";
+    suggestion_adapter adapter;
     String t=""; private RecyclerView recyclerview;
     private ImageButton back;
 

@@ -1,4 +1,4 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.Connectivity;
 
 /**
  * Created by Lincoln on 18/03/16.

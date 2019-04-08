@@ -1,10 +1,10 @@
-package com.utsavgupta.cmclage;
+package com.utsavgupta.cmclage.Adapters;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,19 +18,19 @@ import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.utsavgupta.cmclage.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /*import org.apache.http.HttpResponse;
@@ -133,8 +133,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
     public class PruebaViewHolder extends RecyclerView.ViewHolder{
 
 
-        TextView invoice,hospital,date,time,clinic,location,appoint_id;
-        EditText statts;
+        TextView statts, invoice,hospital,date,time,clinic,location,appoint_id;
         Button sync,navigate; ProgressBar pb;ImageView done;
         int accuracyt,slot_idt,taken_by_idt,school_idt,marked_by_id,marked_type=1;
         String remarkt,datett,marked_ont,datet;String message,status;
@@ -150,7 +149,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
             //appoint_id.setTextSize(context.getResources().getDimension(R.dimen.textsize));
             date = (TextView) itemView.findViewById(R.id.date);
             //date.setTextSize(context.getResources().getDimension(R.dimen.textsize));
-            statts = (EditText) itemView.findViewById(R.id.stat);
+            statts = (TextView) itemView.findViewById(R.id.stat);
             //statts.setTextSize(context.getResources().getDimension(R.dimen.textsize));
             time = (TextView) itemView.findViewById(R.id.time);
             //time.setTextSize(context.getResources().getDimension(R.dimen.textsize));
@@ -230,14 +229,42 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
            date.setText(dates);
            location.setText(loc);
            appoint_id.setText(app_id);
-          /* if(stat.equals("done")){
-               statts.setVisibility(View.GONE);
-               done.setVisibility(View.VISIBLE);
-               }
-          else{*/
+
                done.setVisibility(View.GONE);
+
+              if(stat.equals("0")){
+              statts.setText("Done");
+              statts.setClickable(false);
+              statts.setOnClickListener(null);
+
+               }
+          else{
                statts.setText(stat );
-          // }
+               statts.setClickable(true);
+                  statts.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          final Calendar c = Calendar.getInstance();
+                          int mHour =  Integer.parseInt(stat.substring(0,2));
+                          int mMinute = Integer.parseInt(stat.substring(3,5));
+
+                          // Launch Time Picker Dialog
+                          TimePickerDialog timePickerDialog = new TimePickerDialog(context,
+                                  new TimePickerDialog.OnTimeSetListener() {
+
+                                      @Override
+                                      public void onTimeSet(TimePicker view, int hourOfDay,
+                                                            int minute) {
+                                          statts.setText(hourOfDay + ":" + minute+ " Hrs");
+                                      }
+                                  }, mHour, mMinute, false);
+                          //stat=mHour+":"+mMinute+" Hrs";
+                          timePickerDialog.show();
+                      }
+
+                  });
+           }
+
            navigate.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
@@ -315,6 +342,7 @@ public class BlockPruebaAdapter_mro extends RecyclerView.Adapter<BlockPruebaAdap
         }
 
     }
+
     private boolean whatsappInstalledOrNot(String uri) {
         PackageManager pm = context.getPackageManager();
         boolean app_installed = false;
